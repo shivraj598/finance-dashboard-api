@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 // can serve the SPA (index.html at /, assets at /assets/*).
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  resolve: { alias: { '@': path.resolve(import.meta.dirname, './src') } },
   base: '/',
   build: {
     outDir: '../frontend',
