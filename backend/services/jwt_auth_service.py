@@ -10,6 +10,7 @@ from jwt.exceptions import InvalidTokenError as JWTError
 from passlib.context import CryptContext
 from fastapi import HTTPException, status
 import os
+import uuid
 from dotenv import load_dotenv
 
 from services.interfaces import AuthServiceBase
@@ -41,7 +42,10 @@ class JWTAuthService(AuthServiceBase):
     def create_refresh_token(self, data: dict) -> tuple[str, datetime]:
         to_encode = data.copy()
         expires_at = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-        to_encode.update({"exp": expires_at, "type": "refresh"})
+        # jti guarantees every refresh token is unique. Without it, two logins
+        # within the same second produced byte-identical JWTs and crashed on
+        # the UNIQUE constraint of user_sessions.token (500 on rapid login).
+        to_encode.update({"exp": expires_at, "type": "refresh", "jti": uuid.uuid4().hex})
         token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return token, expires_at
 
