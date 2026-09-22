@@ -28,10 +28,6 @@
   --color-ember-600: #c85a20;
   --color-ember-700: #b94e1b;
 
-  --color-gold-400: #d9b545;
-  --color-gold-500: #c9a227;
-  --color-gold-600: #7a5f0c;
-
   --color-rose-600: #c93a2e;
 
   /* shadcn semantic tokens mapped onto the theme */
@@ -61,6 +57,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     border-color: var(--color-border);
   }
