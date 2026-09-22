@@ -34,8 +34,18 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
+    # Accepts either a username or an email address — the frontend login
+    # field is labelled "Username or Email" and sends whatever the user typed.
     username: str
     password: str
+
+    @field_validator("username")
+    @classmethod
+    def username_or_email_not_empty(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("Username or email is required.")
+        return v
 
 
 class TokenResponse(BaseModel):
