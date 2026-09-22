@@ -6,13 +6,13 @@ A secure, role-based finance dashboard built with FastAPI, PostgreSQL, JWT authe
 
 ## Screenshots
 
-| Sign up | Dashboard |
-|---|---|
-| ![Sign up page](public/signup.png) | ![Dashboard overview](public/dashboard1.png) |
+![Dashboard overview](public/dashboard1.png)
 
-| Records | New record |
-|---|---|
-| ![Financial records](public/records.png) | ![Add a record](public/new-record.png) |
+![Sign up page](public/signup.png)
+
+![Add a record](public/new-record.png)
+
+![Financial records](public/records.png)
 
 ---
 ## Overview
