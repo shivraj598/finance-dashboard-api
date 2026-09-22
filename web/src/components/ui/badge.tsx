@@ -15,7 +15,6 @@ const badgeVariants = cva(
           "border-pine-200 bg-pine-100 text-pine-800",
         expense:
           "border-ember-100 bg-ember-50 text-ember-700",
-        gold: "border-gold-400/40 bg-gold-400/15 text-gold-600",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
       },
