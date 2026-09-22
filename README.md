@@ -1,8 +1,20 @@
 # Finance Dashboard API
 
-A secure, role-based finance dashboard backend built with FastAPI, PostgreSQL, JWT authentication, and RBAC.
+**By Shivraj Timilsena** · Lalitpur, Nepal
 
+A secure, role-based finance dashboard built with FastAPI, PostgreSQL, JWT authentication, RBAC — and a modern React + shadcn-style frontend.
 
+## Screenshots
+
+| Sign up | Dashboard |
+|---|---|
+| ![Sign up page](public/signup.png) | ![Dashboard overview](public/dashboard1.png) |
+
+| Records | New record |
+|---|---|
+| ![Financial records](public/records.png) | ![Add a record](public/new-record.png) |
+
+---
 ## Overview
 
 This project was originally built as a task management API with JWT auth, RBAC, and rate limiting. It was extended into a full finance dashboard backend covering financial records management, dashboard analytics, and multi-role access control.
@@ -47,6 +59,15 @@ uvicorn main:app --reload --port 8000
 
 - **Swagger UI:** http://localhost:8000/docs
 - **ReDoc:** http://localhost:8000/redoc
+- **Dashboard (React SPA):** http://localhost:8000/
+
+### Frontend development
+
+```bash
+cd web
+npm install          # first time only (dev deps required for the build)
+npm run build        # outputs the SPA into ../frontend (served by FastAPI)
+```
 
 > Uses SQLite locally by default. Set `DATABASE_URL` to a PostgreSQL connection string for production.
 
@@ -195,9 +216,18 @@ task-manager-api/
 │   │   ├── jwt_auth_service.py      # JWT implementation
 │   │   └── rate_limiter_service.py  # In-memory sliding window
 │   └── requirements.txt
-├── frontend/
-│   ├── index.html                   # Login / Register (auto-login + forgot password)
-│   └── dashboard.html               # Finance dashboard UI
+├── frontend/                      # Built React SPA (generated — do not edit by hand)
+│   ├── index.html                   # SPA entry (served at /)
+│   └── assets/                      # Hashed JS/CSS bundles (served at /assets/*)
+├── web/                             # React + Tailwind + shadcn-style source
+│   ├── src/
+│   │   ├── components/ui/           # Button, Card, Input, Table, Dialog, Badge…
+│   │   ├── components/              # Sidebar, Topbar, RecordDialog
+│   │   ├── pages/                   # Login, Overview, Records, Team, Profile
+│   │   ├── lib/api.ts               # API client with JWT auto-refresh
+│   │   ├── auth.tsx                 # Auth context (login/register/logout)
+│   │   └── App.tsx                  # View routing + data loading
+│   └── vite.config.ts               # Builds straight into ../frontend
 ├── .env.example
 └── README.md
 ```
