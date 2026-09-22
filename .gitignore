@@ -20,6 +20,11 @@ venv/
 env/
 .venv/
 
+# Frontend (React)
+node_modules/
+web/node_modules/
+web/dist/
+
 # IDE
 .vscode/
 .idea/
