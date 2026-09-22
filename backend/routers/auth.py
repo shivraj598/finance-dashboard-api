@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlalchemy import or_, func
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 
@@ -60,7 +61,20 @@ def login(
     db: Session = Depends(get_db),
     _: None = Depends(limit_login),
 ):
-    user = db.query(User).filter(User.username == payload.username).first()
+    identifier = payload.username.strip()
+    # Accept either username or email (email match is case-insensitive).
+    # Previously this only matched `username`, so anyone typing their email
+    # on the login form always got "Invalid username or password."
+    user = (
+        db.query(User)
+        .filter(
+            or_(
+                User.username == identifier,
+                func.lower(User.email) == identifier.lower(),
+            )
+        )
+        .first()
+    )
 
     # Constant-time failure — prevents user enumeration
     if not user or not verify_password(payload.password, user.hashed_password):
