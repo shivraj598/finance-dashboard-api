@@ -59,20 +59,42 @@ app.include_router(users_router, prefix="/api/v1")
 app.include_router(finance.router)
 app.include_router(dashboard.router)
 
-# ── Serve Frontend ─────────────────────────────────────────────────────────────
+# ── Serve Frontend (React SPA built into ../frontend) ──────────────────────────
+# `npm run build` inside web/ outputs index.html + assets/ here.
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
 if os.path.exists(frontend_path):
-    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+    assets_path = os.path.join(frontend_path, "assets")
+    if os.path.exists(assets_path):
+        app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
-@app.get("/", include_in_schema=False)
-def serve_frontend():
-    index = os.path.join(frontend_path, "index.html")
-    if os.path.exists(index):
-        return FileResponse(index)
+INDEX_HTML = os.path.join(frontend_path, "index.html")
+
+
+def _serve_index():
+    if os.path.exists(INDEX_HTML):
+        return FileResponse(INDEX_HTML)
     return {"message": "Taskr API is running. Visit /docs for the API reference."}
 
 
 # ── Health Check ───────────────────────────────────────────────────────────────
+# NOTE: registered BEFORE the SPA catch-all so it isn't shadowed.
 @app.get("/health", tags=["Health"])
 def health():
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+def serve_frontend():
+    return _serve_index()
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+def serve_spa(full_path: str):
+    # API / docs / health routes are registered before this catch-all,
+    # so they never reach here — only unknown frontend paths do.
+    # Keep a proper 404 for mistyped API URLs instead of serving HTML.
+    if full_path.startswith("api/"):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=404, content={"detail": "Not found."})
+    return _serve_index()
